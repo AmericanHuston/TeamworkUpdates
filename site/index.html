@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Updates</title>
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
+    integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+
+<body>
+    <header>
+        <form id="login" action="/login" method="post">
+            <input type="text" id="username" name="username" required placeholder="username">
+            <input type="password" id="password" name="password" required placeholder="password">
+            <button type="submit">submit!</button>
+        </form>
+    </header>
+    <main>
+        <section id="posts">
+            <h1>If this area is empty, login</h1>
+        </section>
+    </main>
+    <footer>
+        <form id="create-post" action="/make-post" method="post">
+            <textarea placeholder="What task?" id="task" name="task" rows="1" required></textarea>
+            <textarea placeholder="What happened?" id="info" name="info" rows="3" required></textarea>
+            <button type="submit" class="button type1">
+                <span class="btn-txt">Publish</span>
+            </button>
+        </form>
+    </footer>
+</body>
+</html>
