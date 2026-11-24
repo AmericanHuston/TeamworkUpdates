@@ -3,6 +3,7 @@ import auth from './auth.js';
 import fs from 'fs/promises';
 import cookieParser from 'cookie-parser';
 import multer from 'multer';
+import database from './db.js';
 
 const app = express();
 const port = 3000;
@@ -33,7 +34,7 @@ app.get('/posts', auth.authenticateToken, (req, res) => {
     res.send(sendCopy.posts);
 });
 
-app.post('/add-reaction', auth.authenticateToken, (req, res) => {
+app.post('/add-reaction', auth.authenticateToken, async (req, res) => {
     const { reaction, postId } = req.body;
     if (!reactionList.includes(reaction)){
         return res.status(404).json({ "message": "reaction doesn't exist" });
@@ -48,11 +49,11 @@ app.post('/add-reaction', auth.authenticateToken, (req, res) => {
     }
     post.reactions[reaction].reactors.push(user.username);
     post.reactions[reaction].amount += 1;
-    fs.writeFile('./db.json', JSON.stringify(db));
+    await database.saveDatabase(db);
     return res.json({ "message": "Added reaction" });
 });
 
-app.post('/remove-reaction', auth.authenticateToken, (req, res) => {
+app.post('/remove-reaction', auth.authenticateToken, async (req, res) => {
     const { reaction, postId } = req.body;
     if (!reactionList.includes(reaction)) {
         return res.status(404).json({ "message": "reaction doesn't exist" });
@@ -65,13 +66,13 @@ app.post('/remove-reaction', auth.authenticateToken, (req, res) => {
     if (post.reactions[reaction].reactors.includes(user.username)) {
         post.reactions[reaction].reactors.splice(post.reactions[reaction].reactors.indexOf(user.username), 1);
         post.reactions[reaction].amount -= 1;
-        fs.writeFile('./db.json', JSON.stringify(db));
+        await database.saveDatabase(db);
         return res.json({ "message": "Removed reaction" });
     }
     return res.json({ "message": "You've already removed a like on this post! I see you're trying to get around things." });
 });
 
-app.post('/make-post', auth.authenticateToken, upload.none(), (req, res) => {
+app.post('/make-post', auth.authenticateToken, upload.none(), async (req, res) => {
     const { task, info } = req.body;
     const user = db.users.find(user => user.id === req.user.id);
     db.posts.push({
@@ -82,7 +83,7 @@ app.post('/make-post', auth.authenticateToken, upload.none(), (req, res) => {
         reactions: { "thumbsUp": { "amount": 0, "reactors": [] }, "fire": { "amount": 0, "reactors": [] } }
     });
     res.status(201).json({ "message": "Created post"});
-    fs.writeFile('./db.json', JSON.stringify(db));
+    await database.saveDatabase(db);
 });
 
 app.listen(port, () => {
