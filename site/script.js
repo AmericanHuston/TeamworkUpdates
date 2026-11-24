@@ -49,6 +49,7 @@ function downloadPosts(){
         });
     });
     form.reset();
+    login.reset();
 }
 
 function postTemplate(post){
